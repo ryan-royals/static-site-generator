@@ -15,6 +15,8 @@ class LeafNode(HTMLNode):
 
     def props_to_html(self):
         propsString = ""
+        if self.props is None:
+            return propsString
         for prop in self.props:
             propsString += f' {prop}="{self.props[prop]}"'
         return propsString
