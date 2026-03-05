@@ -30,28 +30,42 @@ def extract_markdown_links(text):
 def split_nodes_link(old_nodes):
     new_nodes = []
     for node in old_nodes:
-        to_process = node.text
-        links = extract_markdown_links(node.text)
-        for link in links:
-            sections = to_process.split(f"[{link[0]}]({link[1]})", 1)
-            if sections[0] != "":
-                new_nodes.append(TextNode(sections[0], TextType.TEXT))
-            new_nodes.append(TextNode(link[0], TextType.LINK, link[1]))
-            to_process = sections[1]
+        if node.text_type != TextType.TEXT:
+            new_nodes.append(node)
+        else:
+            to_process = node.text
+            links = extract_markdown_links(node.text)
+            for link in links:
+                sections = to_process.split(f"[{link[0]}]({link[1]})", 1)
+                if sections[0] != "":
+                    new_nodes.append(TextNode(sections[0], TextType.TEXT))
+                new_nodes.append(TextNode(link[0], TextType.LINK, link[1]))
+                to_process = sections[1]
+            if len(to_process) != 0:
+                new_nodes.append(TextNode(to_process, TextType.TEXT))
     return new_nodes
+
+
+def extract_markdown_images(text):
+    return re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
 
 
 def split_nodes_image(old_nodes):
     new_nodes = []
     for node in old_nodes:
-        to_process = node.text
-        images = extract_markdown_images(node.text)
-        for image in images:
-            sections = to_process.split(f"![{image[0]}]({image[1]})", 1)
-            if sections[0] != "":
-                new_nodes.append(TextNode(sections[0], TextType.TEXT))
-            new_nodes.append(TextNode(image[0], TextType.IMAGE, image[1]))
-            to_process = sections[1]
+        if node.text_type != TextType.TEXT:
+            new_nodes.append(node)
+        else:
+            to_process = node.text
+            images = extract_markdown_images(node.text)
+            for image in images:
+                sections = to_process.split(f"![{image[0]}]({image[1]})", 1)
+                if sections[0] != "":
+                    new_nodes.append(TextNode(sections[0], TextType.TEXT))
+                new_nodes.append(TextNode(image[0], TextType.IMAGE, image[1]))
+                to_process = sections[1]
+            if len(to_process) != 0:
+                new_nodes.append(TextNode(to_process, TextType.TEXT))
     return new_nodes
 
 
@@ -73,5 +87,11 @@ def text_node_to_html_node(text_node):
             raise Exception("text_node not valid TextType type")
 
 
-def extract_markdown_images(text):
-    return re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
+def text_to_textnodes(text):
+    new_nodes = [TextNode(text, TextType.TEXT)]
+    new_nodes = split_nodes_delimeter(new_nodes, "**", TextType.BOLD)
+    new_nodes = split_nodes_delimeter(new_nodes, "_", TextType.ITALIC)
+    new_nodes = split_nodes_delimeter(new_nodes, "`", TextType.CODE)
+    new_nodes = split_nodes_link(new_nodes)
+    new_nodes = split_nodes_image(new_nodes)
+    return new_nodes

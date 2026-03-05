@@ -1,7 +1,7 @@
 import unittest
 
 from textnode import TextNode, TextType
-from util import text_node_to_html_node, split_nodes_delimeter, extract_markdown_images, extract_markdown_links, split_nodes_link, split_nodes_image
+from util import text_node_to_html_node, split_nodes_delimeter, extract_markdown_images, extract_markdown_links, split_nodes_link, split_nodes_image, text_to_textnodes
 
 
 class TestTextNodeToHTMLNode(unittest.TestCase):
@@ -200,7 +200,7 @@ class TestRegex(unittest.TestCase):
 class TestSplitNodesLink(unittest.TestCase):
     def test_split_links(self):
         node = TextNode(
-            "This is text with an [link](https://i.imgur.com/zjjcJKZ.png) and another [magical link](https://i.imgur.com/3elNhQu.png)",
+            "This is text with an [link](https://i.imgur.com/zjjcJKZ.png) and another [magical link](https://i.imgur.com/3elNhQu.png) with text after",
             TextType.TEXT,
         )
         new_nodes = split_nodes_link([node])
@@ -212,6 +212,7 @@ class TestSplitNodesLink(unittest.TestCase):
                 TextNode(
                     "magical link", TextType.LINK, "https://i.imgur.com/3elNhQu.png"
                 ),
+                TextNode(" with text after", TextType.TEXT)
             ],
             new_nodes,
         )
@@ -266,7 +267,7 @@ class TestSplitNodesLink(unittest.TestCase):
 class TestSplitNodesImages(unittest.TestCase):
     def test_split_images(self):
         node = TextNode(
-            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png) with text after",
             TextType.TEXT,
         )
         new_nodes = split_nodes_image([node])
@@ -278,6 +279,7 @@ class TestSplitNodesImages(unittest.TestCase):
                 TextNode(
                     "second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"
                 ),
+                TextNode(" with text after", TextType.TEXT)
             ],
             new_nodes,
         )
@@ -327,6 +329,24 @@ class TestSplitNodesImages(unittest.TestCase):
             ],
             new_nodes,
         )
+
+
+class TestTextToTextNodes(unittest.TestCase):
+    def test_combined(self):
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        self.assertListEqual([
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ],
+            text_to_textnodes(text))
 
 
 if __name__ == "__main__":
