@@ -14,7 +14,7 @@ class TestLeafNode(unittest.TestCase):
         self.assertEqual(node, node2)
 
     def test_basic_neq(self):
-        node = LeafNode("a", "this is a leaf node",  {
+        node = LeafNode("a", "this is a leaf node", {
                         "href": "https://ryanroyals.cloud"})
         node2 = LeafNode("a", "this is a different leaf node", {
                          "href": "https://clairewebber.design"})

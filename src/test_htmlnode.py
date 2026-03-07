@@ -7,14 +7,14 @@ from htmlnode import HTMLNode
 
 class TestHTMLNode(unittest.TestCase):
     def test_basic_eq(self):
-        node = HTMLNode("a", "this is a html node", None,  {
+        node = HTMLNode("a", "this is a html node", None, {
                         "href": "https://ryanroyals.cloud"})
         node2 = HTMLNode("a", "this is a html node", None, {
                          "href": "https://ryanroyals.cloud"})
         self.assertEqual(node, node2)
 
     def test_basic_neq(self):
-        node = HTMLNode("a", "this is a html node", None,  {
+        node = HTMLNode("a", "this is a html node", None, {
                         "href": "https://ryanroyals.cloud"})
         node2 = HTMLNode("a", "this is a different html node", None, {
                          "href": "https://clairewebber.design"})

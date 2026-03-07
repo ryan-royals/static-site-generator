@@ -1,7 +1,5 @@
-import re
-
-from leafnode import LeafNode
 from textnode import TextType, TextNode
+from extract import extract_markdown_images, extract_markdown_links
 
 
 def split_nodes_delimeter(old_nodes, delimeter, text_type):
@@ -23,10 +21,6 @@ def split_nodes_delimeter(old_nodes, delimeter, text_type):
     return new_nodes
 
 
-def extract_markdown_links(text):
-    return re.findall(r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
-
-
 def split_nodes_link(old_nodes):
     new_nodes = []
     for node in old_nodes:
@@ -46,10 +40,6 @@ def split_nodes_link(old_nodes):
     return new_nodes
 
 
-def extract_markdown_images(text):
-    return re.findall(r"!\[([^\[\]]*)\]\(([^\(\)]*)\)", text)
-
-
 def split_nodes_image(old_nodes):
     new_nodes = []
     for node in old_nodes:
@@ -66,32 +56,4 @@ def split_nodes_image(old_nodes):
                 to_process = sections[1]
             if len(to_process) != 0:
                 new_nodes.append(TextNode(to_process, TextType.TEXT))
-    return new_nodes
-
-
-def text_node_to_html_node(text_node):
-    match text_node.text_type:
-        case TextType.TEXT:
-            return LeafNode(None, text_node.text)
-        case TextType.BOLD:
-            return LeafNode("b", text_node.text)
-        case TextType.ITALIC:
-            return LeafNode("i", text_node.text)
-        case TextType.CODE:
-            return LeafNode("code", text_node.text)
-        case TextType.LINK:
-            return LeafNode("a", text_node.text, {"href": text_node.url})
-        case TextType.IMAGE:
-            return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
-        case _:
-            raise Exception("text_node not valid TextType type")
-
-
-def text_to_textnodes(text):
-    new_nodes = [TextNode(text, TextType.TEXT)]
-    new_nodes = split_nodes_delimeter(new_nodes, "**", TextType.BOLD)
-    new_nodes = split_nodes_delimeter(new_nodes, "_", TextType.ITALIC)
-    new_nodes = split_nodes_delimeter(new_nodes, "`", TextType.CODE)
-    new_nodes = split_nodes_link(new_nodes)
-    new_nodes = split_nodes_image(new_nodes)
     return new_nodes

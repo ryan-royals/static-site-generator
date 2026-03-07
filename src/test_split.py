@@ -1,72 +1,7 @@
 import unittest
 
 from textnode import TextNode, TextType
-from util import text_node_to_html_node, split_nodes_delimeter, extract_markdown_images, extract_markdown_links, split_nodes_link, split_nodes_image, text_to_textnodes
-
-
-class TestTextNodeToHTMLNode(unittest.TestCase):
-    def test_not_valid_type(self):
-        node = TextNode("Not a valid Node", None)
-        with self.assertRaises(Exception):
-            text_node_to_html_node(node)
-
-    def test_text(self):
-        text = TextNode("Text Node", TextType.TEXT)
-        html = text_node_to_html_node(text)
-
-        self.assertEqual(html.to_html(), "Text Node")
-        self.assertEqual(html.props_to_html(), "")
-        self.assertEqual(html.tag, None)
-        self.assertEqual(html.value, "Text Node")
-
-    def test_bold(self):
-        text = TextNode("Bold Text Node", TextType.BOLD)
-        html = text_node_to_html_node(text)
-
-        self.assertEqual(html.to_html(), "<b>Bold Text Node</b>")
-        self.assertEqual(html.props_to_html(), "")
-        self.assertEqual(html.tag, "b")
-        self.assertEqual(html.value, "Bold Text Node")
-
-    def test_italic(self):
-        text = TextNode("Italic Text Node", TextType.ITALIC)
-        html = text_node_to_html_node(text)
-
-        self.assertEqual(html.to_html(), "<i>Italic Text Node</i>")
-        self.assertEqual(html.props_to_html(), "")
-        self.assertEqual(html.tag, "i")
-        self.assertEqual(html.value, "Italic Text Node")
-
-    def test_code(self):
-        text = TextNode("Code Text Node", TextType.CODE)
-        html = text_node_to_html_node(text)
-
-        self.assertEqual(html.to_html(), "<code>Code Text Node</code>")
-        self.assertEqual(html.props_to_html(), "")
-        self.assertEqual(html.tag, "code")
-        self.assertEqual(html.value, "Code Text Node")
-
-    def test_link(self):
-        text = TextNode("Link Text Node", TextType.LINK,
-                        "https://ryanroyals.cloud")
-        html = text_node_to_html_node(text)
-
-        self.assertEqual(html.to_html(), "<a>Link Text Node</a>")
-        self.assertEqual(html.props_to_html(),
-                         ' href="https://ryanroyals.cloud"')
-        self.assertEqual(html.tag, "a")
-        self.assertEqual(html.value, "Link Text Node")
-
-    def test_image(self):
-        text = TextNode("Image Text Node", TextType.IMAGE,
-                        "https://ryanroyals.cloud/cat.png")
-        html = text_node_to_html_node(text)
-
-        self.assertEqual(html.to_html(), "<img></img>")
-        self.assertEqual(html.props_to_html(),
-                         ' src="https://ryanroyals.cloud/cat.png" alt="Image Text Node"')
-        self.assertEqual(html.tag, "img")
-        self.assertEqual(html.value, "")
+from split import split_nodes_delimeter, split_nodes_image, split_nodes_link
 
 
 class SplitNodesDelimeter(unittest.TestCase):
@@ -165,36 +100,6 @@ class SplitNodesDelimeter(unittest.TestCase):
     #
     #     self.assertEqual(split_nodes_delimeter(
     #         nodes, "*", TextType.ITALIC), expected)
-
-
-class TestRegex(unittest.TestCase):
-    def test_extract_single_markdown_images(self):
-        matches = extract_markdown_images(
-            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
-        )
-        self.assertListEqual(
-            [("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
-
-    def test_extract_multiple_markdown_images(self):
-        matches = extract_markdown_images(
-            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png), and also This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
-        )
-        self.assertListEqual(
-            [("image", "https://i.imgur.com/zjjcJKZ.png"), ("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
-
-    def test_extract_single_markdown_link(self):
-        matches = extract_markdown_links(
-            "This is link [to my blog](https://ryanroyals.cloud)"
-        )
-        self.assertListEqual(
-            [("to my blog", "https://ryanroyals.cloud")], matches)
-
-    def test_extract_multiple_markdown_link(self):
-        matches = extract_markdown_links(
-            "This is link [to my blog](https://ryanroyals.cloud) and [to claires portfolio](https://clairewebber.design)"
-        )
-        self.assertListEqual(
-            [("to my blog", "https://ryanroyals.cloud"), ("to claires portfolio", "https://clairewebber.design")], matches)
 
 
 class TestSplitNodesLink(unittest.TestCase):
@@ -329,24 +234,6 @@ class TestSplitNodesImages(unittest.TestCase):
             ],
             new_nodes,
         )
-
-
-class TestTextToTextNodes(unittest.TestCase):
-    def test_combined(self):
-        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
-        self.assertListEqual([
-            TextNode("This is ", TextType.TEXT),
-            TextNode("text", TextType.BOLD),
-            TextNode(" with an ", TextType.TEXT),
-            TextNode("italic", TextType.ITALIC),
-            TextNode(" word and a ", TextType.TEXT),
-            TextNode("code block", TextType.CODE),
-            TextNode(" and an ", TextType.TEXT),
-            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
-            TextNode(" and a ", TextType.TEXT),
-            TextNode("link", TextType.LINK, "https://boot.dev"),
-        ],
-            text_to_textnodes(text))
 
 
 if __name__ == "__main__":
