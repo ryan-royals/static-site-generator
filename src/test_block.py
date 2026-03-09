@@ -73,7 +73,7 @@ class TestBlockToBlockType(unittest.TestCase):
 
     def test_paragraph(self):
         block = (
-            "I'm just a boring paragraph\n",
+            "I'm just a boring paragraph\n"
             "No tricks, no pizzazz"
         )
         self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
