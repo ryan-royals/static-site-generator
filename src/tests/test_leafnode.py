@@ -1,6 +1,6 @@
 import unittest
 
-from leafnode import LeafNode
+from nodes.leafnode import LeafNode
 
 # LeafNode(tag=None, value=None, props=None)
 

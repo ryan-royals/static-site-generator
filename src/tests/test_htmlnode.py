@@ -1,6 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode
+from nodes.htmlnode import HTMLNode
 
 # HTMLNode(tag=None, value=None, children=None, props=None)
 

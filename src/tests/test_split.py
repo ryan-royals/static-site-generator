@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, TextType
+from nodes.textnode import TextNode, TextType
 from split import split_nodes_delimeter, split_nodes_image, split_nodes_link
 
 

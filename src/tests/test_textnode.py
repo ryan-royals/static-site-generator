@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, TextType
+from nodes.textnode import TextNode, TextType
 
 # TextNode(text, text_type, url=None)
 

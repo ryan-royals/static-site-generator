@@ -1,4 +1,4 @@
-from textnode import TextNode, TextType
+from types.textnode import TextNode, TextType
 
 print("hello world")
 
