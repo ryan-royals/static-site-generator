@@ -45,8 +45,8 @@ def text_to_textnodes(text):
     new_nodes = split_nodes_delimeter(new_nodes, "**", TextType.BOLD)
     new_nodes = split_nodes_delimeter(new_nodes, "_", TextType.ITALIC)
     new_nodes = split_nodes_delimeter(new_nodes, "`", TextType.CODE)
-    new_nodes = split_nodes_link(new_nodes)
     new_nodes = split_nodes_image(new_nodes)
+    new_nodes = split_nodes_link(new_nodes)
 
     return new_nodes
 
@@ -96,7 +96,7 @@ def quote_block_to_html_node(text):
 
     new_lines = []
     for line in lines:
-        new_lines.append(line.replace("> ", "", 1).strip())
+        new_lines.append(line.replace(">", "", 1).strip())
     new_text = " ".join(new_lines)
     children = text_to_children(new_text)
 

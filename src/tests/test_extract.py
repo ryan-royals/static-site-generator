@@ -1,6 +1,6 @@
 import unittest
 
-from extract import extract_markdown_images, extract_markdown_links
+from extract import extract_markdown_images, extract_markdown_links, extract_title
 
 
 class TestRegex(unittest.TestCase):
@@ -31,6 +31,24 @@ class TestRegex(unittest.TestCase):
         )
         self.assertListEqual(
             [("to my blog", "https://ryanroyals.cloud"), ("to claires portfolio", "https://clairewebber.design")], matches)
+
+
+class TestTitleExtract(unittest.TestCase):
+    def test_extract_title(self):
+        markdown = (
+            "# heading 1\n"
+            "## heading 2\n"
+            "body with a # in the middle"
+        )
+        self.assertEqual("heading 1", extract_title(markdown))
+
+    def test_no_title(self):
+        markdown = (
+            "## heading 2\n"
+            "body with a # in the middle"
+        )
+        with self.assertRaises(Exception):
+            extract_title(markdown)
 
 
 if __name__ == "__main__":

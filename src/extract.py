@@ -26,3 +26,17 @@ def block_to_block_type(block):
         return BlockType.ORDERED_LIST
 
     return BlockType.PARAGRAPH
+
+
+def extract_title(markdown):
+    lines = markdown.split("\n")
+
+    title = ""
+    for line in lines:
+        if line.startswith("# "):
+            title = line.strip("# ")
+
+    if title == "":
+        raise Exception("Title not found")
+
+    return title
