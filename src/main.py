@@ -38,13 +38,27 @@ def generate_page(from_path, template_path, dest_path):
         f.write(page)
 
 
+def generate_pages_recursively(dir_path_content, template_path, dest_dir_path):
+    print(f"working on dir {dir_path_content}")
+    files = os.listdir(dir_path_content)
+    for file in files:
+        file_path = os.path.join(dir_path_content, file)
+        if os.path.isfile(file_path):
+            generate_page(file_path, template_path, os.path.join(dest_dir_path, file.replace(".md", ".html")))
+        else:
+            next_dir = os.path.join(dir_path_content, file)
+            next_dest = os.path.join(dest_dir_path, file)
+            print(f"making dir {next_dest}")
+            generate_pages_recursively(next_dir, template_path, next_dest)
+
+
 def main():
     if os.path.exists("./public"):
         shutil.rmtree("./public")
     os.mkdir("./public")
     files_from_dir("./static", "./public")
 
-    generate_page("content/index.md", "src/template.html", "public/index.html")
+    generate_pages_recursively("content", "src/template.html", "public")
 
 
 main()
